@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVENTORA | Discover Events</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <header class="navbar">
+        <div class="logo">eventora.</div>
+
+        <nav class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#events">Explore Events</a>
+            <a href="#about">About</a>
+        </nav>
+
+        <div class="nav-actions">
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle Theme">☀</button>
+
+            <!-- LOGIN AND SIGNUP BUTTONS -->
+            <div class="account-actions" id="accountActions">
+                <button class="login-btn" onclick="openAuth('login')">Log In</button>
+                <button class="signup-btn" onclick="openAuth('signup')">Sign Up</button>
+            </div>
+
+            <!-- LOGGED-IN USER MENU -->
+            <div class="user-menu" id="userMenu" style="display:none;">
+                <button class="user-btn" onclick="toggleUserMenu()">
+                    <span id="userGreeting">My Account</span> ▾
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                    <button onclick="showMyRegistrations()">My Registrations</button>
+                    <button onclick="logoutUser()">Log Out</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="eyebrow">
+                <span class="live-dot"></span>
+                <span>EXPERIENCES THAT BRING US TOGETHER</span>
+            </div>
+
+            <h1>Discover events.<br><span>Create memories.</span></h1>
+
+            <p class="hero-description">
+                From live music and technology conferences to creative workshops and sporting events, find experiences worth being part of.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#events" class="primary-button">Explore Now</a>
+            </div>
+
+            <!-- COUNTDOWN TIMER BONUS FEATURE -->
+            <div class="countdown-banner">
+                <p class="countdown-label">NEXT FEATURED EVENT STARTS IN:</p>
+                <div class="timer-display" id="timerDisplay">
+                    <div class="time-unit"><span id="days">00</span><label>Days</label></div>
+                    <div class="time-unit"><span id="hours">00</span><label>Hours</label></div>
+                    <div class="time-unit"><span id="minutes">00</span><label>Mins</label></div>
+                    <div class="time-unit"><span id="seconds">00</span><label>Secs</label></div>
+                </div>
+            </div>
+
+            <div class="hero-stats">
+                <div>
+                    <h3>100+</h3>
+                    <p>Events</p>
+                </div>
+                <div>
+                    <h3>20+</h3>
+                    <p>Categories</p>
+                </div>
+                <div>
+                    <h3>10K+</h3>
+                    <p>Visitors</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1000&q=85" alt="Live music event crowd">
+            <div class="floating-card">
+                <span class="floating-icon">✦</span>
+                <div>
+                    <strong>Neon Nights 2026</strong>
+                    <p>Next Big Spotlight Event</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EVENTS SECTION -->
+    <section class="events-section" id="events">
+        <div class="section-heading">
+            <div>
+                <p class="section-label">FIND YOUR NEXT EXPERIENCE</p>
+                <h2>Upcoming Events</h2>
+                <p>Explore events happening around you.</p>
+            </div>
+            <div class="event-count">
+                Showing <span id="eventCount">0</span> Events
+            </div>
+        </div>
+
+        <!-- SEARCH AND SORT -->
+        <div class="event-controls">
+            <div class="search-box">
+                🔍
+                <input type="text" id="searchInput" placeholder="Search by name, location, or tag...">
+            </div>
+            <select id="sortSelect">
+                <option value="date">Sort by Date</option>
+                <option value="name">Sort by Name</option>
+            </select>
+        </div>
+
+        <!-- CATEGORY FILTERS -->
+        <div class="category-filters">
+            <button class="category-btn active" data-category="All">All</button>
+            <button class="category-btn" data-category="Music">Music</button>
+            <button class="category-btn" data-category="Technology">Technology</button>
+            <button class="category-btn" data-category="Workshop">Workshops</button>
+            <button class="category-btn" data-category="Culture">Culture</button>
+            <button class="category-btn" data-category="Sports">Sports</button>
+        </div>
+
+        <!-- EVENT GRID -->
+        <div class="event-grid" id="eventGrid"></div>
+        <p id="noEvents" class="no-events" hidden>No events found matching your filter criteria.</p>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about-section" id="about">
+        <p class="section-label">ABOUT EVENTORA</p>
+        <h2>Making every event <span>an experience.</span></h2>
+        <p>
+            EVENTORA is a platform designed to help people discover interesting events, explore new experiences, and register seamlessly for activities that match their passions.
+        </p>
+    </section>
+
+    <!-- EVENT DETAILS MODAL -->
+    <div class="modal" id="detailsModal" hidden>
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeDetails()">&times;</button>
+            <h2 id="detailTitle">Event Details</h2>
+            <p id="detailCategory" class="event-date"></p>
+            <p id="detailDescription" style="margin: 15px 0; color: var(--muted);"></p>
+            <p id="detailLocation"></p>
+            <p id="detailPrice" style="font-weight: bold; margin-top: 10px;"></p>
+            <button class="primary-button" id="detailRegisterBtn" style="margin-top: 20px; width: 100%;">Proceed to Register</button>
+        </div>
+    </div>
+
+    <!-- EVENT REGISTRATION MODAL -->
+    <div class="modal" id="registrationModal" hidden>
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <h2>Register for an Event</h2>
+            <p id="selectedEventText">Fill in your details to reserve your place.</p>
+
+            <form id="registrationForm">
+                <label for="participantName">Full Name</label>
+                <input type="text" id="participantName" placeholder="Enter your full name" required>
+
+                <label for="participantEmail">Email Address</label>
+                <input type="email" id="participantEmail" placeholder="Enter your email" required>
+
+                <label for="participantPhone">Phone Number</label>
+                <input type="tel" id="participantPhone" placeholder="10-digit mobile number" required>
+
+                <label for="selectedEvent">Selected Event</label>
+                <input type="text" id="selectedEvent" readonly>
+
+                <button type="submit" class="primary-button">Confirm Registration</button>
+            </form>
+            <p id="registrationMessage" class="success-message" hidden></p>
+        </div>
+    </div>
+
+    <!-- AUTHENTICATION MODAL -->
+    <div class="modal" id="authModal" hidden>
+        <div class="modal-content auth-content">
+            <button class="close-modal" onclick="closeAuth()">&times;</button>
+            <h2 id="authTitle">Welcome Back!</h2>
+            <p id="authSubtitle">Log in to manage your event registrations.</p>
+
+            <form id="authForm">
+                <div id="signupNameField" hidden>
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter full name">
+                </div>
+
+                <label for="authEmail">Email Address</label>
+                <input type="email" id="authEmail" placeholder="Enter email" required>
+
+                <label for="authPassword">Password</label>
+                <input type="password" id="authPassword" placeholder="Enter password" required>
+
+                <button type="submit" class="primary-button auth-submit" id="authSubmit">Log In</button>
+            </form>
+
+            <p class="auth-switch" id="authSwitch">
+                Don't have an account? <a href="#" onclick="openAuth('signup'); return false;">Sign Up</a>
+            </p>
+            <p id="authMessage" style="color: #ef4444; margin-top: 10px; text-align: center;"></p>
+        </div>
+    </div>
+
+    <!-- MY REGISTRATIONS MODAL -->
+    <div class="modal" id="myRegistrationsModal" hidden>
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeMyRegistrations()">&times;</button>
+            <h2>My Registrations</h2>
+            <p>Events you have registered for:</p>
+            <div id="myRegistrationsList"></div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="logo">eventora.</div>
+        <p>Discover events. Create memories.</p>
+        <p class="copyright">&copy; 2026 EVENTORA. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
